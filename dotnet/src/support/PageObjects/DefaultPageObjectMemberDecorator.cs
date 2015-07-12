@@ -73,7 +73,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// a class's member.</param>
         /// <param name="locator">The <see cref="IElementLocator"/> used to locate elements.</param>
         /// <returns>A transparent proxy to the WebDriver element object.</returns>
-        public object Decorate(MemberInfo member, IElementLocator locator)
+        public virtual object Decorate(MemberInfo member, IElementLocator locator)
         {
             FieldInfo field = member as FieldInfo;
             PropertyInfo property = member as PropertyInfo;
@@ -200,7 +200,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
             else if (memberType == typeof(IWebElement))
             {
-                proxyObject = WebElementProxy.CreateProxy(InterfaceProxyType, locator, bys, cache);
+                proxyObject = CreateProxy(InterfaceProxyType, locator, bys, cache);
             }
             else
             {
@@ -208,6 +208,11 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
 
             return proxyObject;
+        }
+        
+        protected static object CreateProxyObject(IElementLocator locator, IEnumerable<By> bys, bool cache)
+        {
+            return WebElementProxy.CreateProxy(InterfaceProxyType, locator, bys, cache);
         }
 
         private static Type CreateTypeForASingleElement()
